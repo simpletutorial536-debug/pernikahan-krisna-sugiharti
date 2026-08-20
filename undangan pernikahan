@@ -1,0 +1,241 @@
+from pathlib import Path
+import zipfile, textwrap
+
+out = Path("/mnt/data/undangan_jawa_demo")
+out.mkdir(exist_ok=True)
+
+html = r'''<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Wedding — Aditya & Sekar</title>
+<meta name="description" content="Undangan Pernikahan Aditya & Sekar">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--maroon:#5b1721;--deep:#351016;--gold:#c9a35b;--cream:#f7f0e3;--ink:#33251f}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Poppins,sans-serif;background:var(--cream);color:var(--ink);line-height:1.7}
+button,a{font:inherit}
+a{color:inherit;text-decoration:none}
+section{padding:80px 20px;position:relative;overflow:hidden}
+.container{max-width:1000px;margin:auto}
+.ornament{color:var(--gold);letter-spacing:8px;font-size:18px;margin:14px 0}
+.kicker{text-transform:uppercase;letter-spacing:4px;font-size:11px;color:var(--gold)}
+h2{font-family:"Cormorant Garamond",serif;font-size:48px;line-height:1.05;color:var(--maroon)}
+.subtitle{max-width:650px;margin:15px auto 0;color:#6d5b51}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;color:white;background:
+linear-gradient(rgba(53,16,22,.74),rgba(53,16,22,.9)),
+radial-gradient(circle at 50% 25%,#9a5a45 0,#5b1721 35%,#240a0f 100%);}
+.hero:before,.hero:after{content:"";position:absolute;inset:18px;border:1px solid rgba(201,163,91,.55);pointer-events:none}
+.hero:after{inset:28px;border-style:dashed;opacity:.35}
+.hero-content{position:relative;z-index:2;padding:40px 18px}
+.hero .kicker{color:#e4c98e}
+.hero h1{font-family:"Cormorant Garamond",serif;font-size:clamp(64px,12vw,120px);font-weight:500;line-height:.8;margin:20px 0;color:#fff}
+.hero .amp{font-family:"Playfair Display",serif;color:var(--gold);font-size:48px}
+.hero-date{font-family:"Cormorant Garamond",serif;font-size:26px;color:#f4dfb0}
+.btn{display:inline-block;margin-top:28px;padding:12px 24px;border:1px solid var(--gold);color:white;border-radius:30px;letter-spacing:1px;cursor:pointer;background:transparent;transition:.3s}
+.btn:hover{background:var(--gold);color:var(--deep)}
+.intro{text-align:center;background:var(--cream)}
+.quote{font-family:"Cormorant Garamond",serif;font-size:30px;max-width:750px;margin:25px auto;color:var(--maroon)}
+.quote small{display:block;font-family:Poppins;font-size:11px;letter-spacing:2px;margin-top:10px;color:#806e63}
+.couple{background:#fffaf1}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:30px;margin-top:45px}
+.card{padding:35px 25px;text-align:center;border:1px solid #dfcfb4;background:rgba(255,255,255,.55);position:relative}
+.avatar{width:145px;height:145px;border-radius:50%;margin:0 auto 20px;display:grid;place-items:center;background:linear-gradient(135deg,#7a2630,#c9a35b);color:white;font-family:"Cormorant Garamond";font-size:52px;border:5px solid #f4e5c8;outline:1px solid var(--gold)}
+.card h3{font-family:"Cormorant Garamond";font-size:34px;color:var(--maroon)}
+.parents{font-size:13px;color:#78675d;margin-top:8px}
+.story{text-align:center;background:linear-gradient(180deg,#f7f0e3,#efe3cf)}
+.timeline{max-width:750px;margin:50px auto 0;border-left:1px solid var(--gold);text-align:left}
+.event{position:relative;padding:0 0 38px 35px}
+.event:before{content:"";position:absolute;left:-6px;top:6px;width:11px;height:11px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 5px #efe3cf}
+.event h3{font-family:"Cormorant Garamond";font-size:30px;color:var(--maroon)}
+.event .year{font-size:11px;letter-spacing:3px;color:#8d6e43;text-transform:uppercase}
+.event p{font-size:14px;color:#66574f}
+.events{text-align:center;background:#fffaf1}
+.event-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:25px;margin-top:45px}
+.event-box{padding:35px 20px;border:1px solid #dfcfb4;background:#fff}
+.event-box h3{font-family:"Cormorant Garamond";font-size:34px;color:var(--maroon)}
+.event-box .date{color:var(--gold);font-weight:600;margin:12px 0}
+.maps{margin-top:25px}
+.countdown{background:var(--deep);color:white;text-align:center}
+.countdown h2{color:#f1d89e}
+.timer{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:700px;margin:40px auto}
+.time{padding:18px 8px;border:1px solid rgba(201,163,91,.5);background:rgba(255,255,255,.04)}
+.time strong{display:block;font-family:"Cormorant Garamond";font-size:44px;color:#fff}
+.time span{font-size:10px;letter-spacing:2px;color:#d8bd83}
+.gallery{background:#f2e7d4;text-align:center}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:40px}
+.photo{aspect-ratio:1;display:grid;place-items:center;background:linear-gradient(135deg,#5b1721,#b98259);color:#f7dfaa;font-family:"Cormorant Garamond";font-size:30px}
+.rsvp{text-align:center;background:#fffaf1}
+form{max-width:600px;margin:35px auto 0;display:grid;gap:12px;text-align:left}
+input,select,textarea{width:100%;padding:13px 15px;border:1px solid #d8c7ac;background:white;border-radius:6px;outline:none}
+textarea{min-height:100px;resize:vertical}
+.form-btn{border:0;background:var(--maroon);color:white;padding:13px 20px;border-radius:6px;cursor:pointer}
+.gift{text-align:center;background:linear-gradient(135deg,#4a121b,#6d202a);color:white}
+.gift h2{color:#f1d89e}
+.gift-box{max-width:600px;margin:35px auto 0;padding:30px;border:1px solid rgba(201,163,91,.55)}
+footer{text-align:center;padding:45px 20px;background:#21090d;color:#d9c8b7}
+footer strong{font-family:"Cormorant Garamond";font-size:32px;color:#e2c47e}
+.music{position:fixed;right:18px;bottom:18px;width:48px;height:48px;border-radius:50%;border:1px solid var(--gold);background:var(--maroon);color:white;z-index:50;cursor:pointer}
+.fade{opacity:0;transform:translateY(20px);transition:opacity .8s,transform .8s}.fade.show{opacity:1;transform:none}
+@media(max-width:700px){
+section{padding:65px 16px}.cards,.event-grid{grid-template-columns:1fr}.timer{gap:7px}.time strong{font-size:32px}.gallery-grid{grid-template-columns:repeat(2,1fr)}h2{font-size:40px}.hero:before{inset:12px}.hero:after{inset:20px}
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="kicker">The Wedding Of</div>
+    <div class="ornament">✦ ❦ ✦</div>
+    <h1>Aditya<br><span class="amp">&</span><br>Sekar</h1>
+    <div class="hero-date">Minggu, 17 Januari 2027</div>
+    <a href="#home" class="btn">Buka Undangan</a>
+  </div>
+</section>
+
+<section id="home" class="intro fade">
+  <div class="container">
+    <div class="kicker">Assalamu'alaikum Warahmatullahi Wabarakatuh</div>
+    <div class="ornament">❧ ✦ ❧</div>
+    <div class="quote">“Semoga Allah menyatukan dua hati dalam cinta, kasih sayang, dan keberkahan.”<small>Dengan penuh rasa syukur, kami mengundang Bapak/Ibu/Saudara/i</small></div>
+  </div>
+</section>
+
+<section class="couple fade">
+  <div class="container">
+    <div class="kicker" style="text-align:center">Mempelai</div>
+    <h2 style="text-align:center">Sepasang Hati</h2>
+    <div class="cards">
+      <div class="card"><div class="avatar">A</div><h3>Raden Mas Aditya</h3><div class="parents">Putra dari<br><b>Bapak Budi Santoso</b> & <b>Ibu Sri Lestari</b></div></div>
+      <div class="card"><div class="avatar">S</div><h3>Raden Ayu Sekar</h3><div class="parents">Putri dari<br><b>Bapak Haryono</b> & <b>Ibu Endah Wulandari</b></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="story fade">
+  <div class="container">
+    <div class="kicker">Our Journey</div><h2>Perjalanan Romantis Kami</h2>
+    <p class="subtitle">Dari sebuah pertemuan sederhana, tumbuh menjadi kisah yang ingin kami jalani selamanya.</p>
+    <div class="timeline">
+      <div class="event"><div class="year">2019 — Awal Pertemuan</div><h3>Berawal dari Sapa</h3><p>Sebuah pertemuan sederhana mempertemukan dua insan yang belum menyadari bahwa hari itu akan menjadi awal dari cerita panjang.</p></div>
+      <div class="event"><div class="year">2020 — Mulai Mengenal</div><h3>Menjadi Lebih Dekat</h3><p>Obrolan kecil berubah menjadi kebiasaan. Kami mulai saling berbagi cerita, tawa, harapan, dan mimpi.</p></div>
+      <div class="event"><div class="year">2022 — Jatuh Cinta</div><h3>Memilih untuk Bersama</h3><p>Rasa nyaman tumbuh menjadi cinta. Kami belajar memahami, menjaga, dan menerima satu sama lain.</p></div>
+      <div class="event"><div class="year">2025 — Sebuah Keseriusan</div><h3>Menuju Satu Tujuan</h3><p>Dengan restu keluarga, kami memantapkan hati untuk melangkah ke jenjang yang lebih serius.</p></div>
+      <div class="event"><div class="year">2027 — Hari Bahagia</div><h3>Selamanya Bersama</h3><p>Kini kami siap membuka lembaran baru. Bukan lagi tentang aku dan kamu, tetapi tentang kita.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="events fade">
+  <div class="container">
+    <div class="kicker" style="text-align:center">Save The Date</div><h2 style="text-align:center">Acara Pernikahan</h2>
+    <div class="event-grid">
+      <div class="event-box"><div class="ornament">❦</div><h3>Akad Nikah</h3><div class="date">Minggu, 17 Januari 2027<br>08.00 WIB — Selesai</div><p>Gedung Pendopo Jawa<br>Jl. Diponegoro No. 10<br>Yogyakarta</p><a class="btn" href="https://www.google.com/maps/search/?api=1&query=Pendopo%20Yogyakarta" target="_blank">Lihat Lokasi</a></div>
+      <div class="event-box"><div class="ornament">❦</div><h3>Resepsi</h3><div class="date">Minggu, 17 Januari 2027<br>11.00 — 14.00 WIB</div><p>Gedung Pendopo Jawa<br>Jl. Diponegoro No. 10<br>Yogyakarta</p><a class="btn" style="color:var(--maroon)" href="https://www.google.com/maps/search/?api=1&query=Pendopo%20Yogyakarta" target="_blank">Lihat Lokasi</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="countdown fade">
+  <div class="container"><div class="kicker">Counting The Days</div><h2>Menuju Hari Bahagia</h2>
+    <div class="timer">
+      <div class="time"><strong id="days">00</strong><span>HARI</span></div>
+      <div class="time"><strong id="hours">00</strong><span>JAM</span></div>
+      <div class="time"><strong id="minutes">00</strong><span>MENIT</span></div>
+      <div class="time"><strong id="seconds">00</strong><span>DETIK</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="gallery fade">
+  <div class="container"><div class="kicker">Our Memories</div><h2>Galeri Kenangan</h2><p class="subtitle">Ganti kotak-kotak ini dengan foto pasangan Anda.</p>
+    <div class="gallery-grid"><div class="photo">Foto 01</div><div class="photo">Foto 02</div><div class="photo">Foto 03</div><div class="photo">Foto 04</div><div class="photo">Foto 05</div><div class="photo">Foto 06</div></div>
+  </div>
+</section>
+
+<section class="rsvp fade">
+  <div class="container"><div class="kicker">RSVP</div><h2>Konfirmasi Kehadiran</h2><p class="subtitle">Mohon konfirmasi kehadiran Anda melalui WhatsApp.</p>
+    <form id="rsvpForm">
+      <input id="name" placeholder="Nama Anda" required>
+      <select id="attendance"><option value="Hadir">Saya akan hadir</option><option value="Tidak hadir">Maaf, saya tidak dapat hadir</option></select>
+      <textarea id="message" placeholder="Ucapan untuk kedua mempelai (opsional)"></textarea>
+      <button class="form-btn" type="submit">Kirim via WhatsApp</button>
+    </form>
+  </div>
+</section>
+
+<section class="gift fade">
+  <div class="container"><div class="kicker">Wedding Gift</div><h2>Hadiah Pernikahan</h2>
+    <div class="gift-box"><p>Doa restu Anda adalah hadiah terindah bagi kami.</p><br><p><b>Bank Demo</b><br>1234567890<br>a.n. Raden Mas Aditya</p><button class="btn" onclick="navigator.clipboard.writeText('1234567890');this.textContent='Nomor tersalin ✓'">Salin Nomor Rekening</button></div>
+  </div>
+</section>
+
+<footer><div class="ornament">✦ ❦ ✦</div><strong>Aditya & Sekar</strong><p>Terima kasih atas doa dan restu Anda.</p></footer>
+
+<button class="music" id="musicBtn" aria-label="Musik">♫</button>
+<audio id="music" loop preload="none">
+  <!-- Ganti dengan file musik Anda: musik.mp3 -->
+  <source src="musik.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const target = new Date("2027-01-17T08:00:00+07:00").getTime();
+function tick(){
+  let d=Math.max(0,target-Date.now());
+  document.getElementById("days").textContent=String(Math.floor(d/86400000)).padStart(2,"0");
+  d%=86400000; document.getElementById("hours").textContent=String(Math.floor(d/3600000)).padStart(2,"0");
+  d%=3600000; document.getElementById("minutes").textContent=String(Math.floor(d/60000)).padStart(2,"0");
+  d%=60000; document.getElementById("seconds").textContent=String(Math.floor(d/1000)).padStart(2,"0");
+}
+tick();setInterval(tick,1000);
+
+document.querySelectorAll(".fade").forEach(el=>new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("show")}),{threshold:.12}).observe(el));
+
+const audio=document.getElementById("music"), btn=document.getElementById("musicBtn");
+btn.onclick=async()=>{try{if(audio.paused){await audio.play();btn.textContent="❚❚"}else{audio.pause();btn.textContent="♫"}}catch(e){alert("Tambahkan file musik.mp3 ke folder undangan terlebih dahulu.")}};
+
+document.getElementById("rsvpForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const name=document.getElementById("name").value.trim();
+ const attendance=document.getElementById("attendance").value;
+ const msg=document.getElementById("message").value.trim();
+ const text=`Halo, saya ${name}.%0A%0AKonfirmasi: ${attendance}.%0A${msg?`Ucapan: ${msg}`:""}`;
+ window.open(`https://wa.me/6281234567890?text=${text}`,"_blank");
+});
+</script>
+</body>
+</html>'''
+
+(out/"index.html").write_text(html, encoding="utf-8")
+# Add a small README explaining customization
+readme = """DEMO UNDANGAN PERNIKAHAN JAWA — ADITYA & SEKAR
+
+Cara membuka:
+1. Buka index.html di browser.
+2. Untuk musik, masukkan file musik.mp3 ke folder ini.
+3. Untuk upload online, upload seluruh folder/ZIP ke hosting HTML statis.
+
+Bagian yang perlu diganti:
+- Nama mempelai dan orang tua di index.html
+- Tanggal/jam acara
+- Alamat dan link Google Maps
+- Nomor WhatsApp RSVP (cari 6281234567890)
+- Nomor rekening demo
+- Foto pada bagian Galeri
+- File musik.mp3
+
+Tema: Jawa klasik maroon-gold, responsive untuk HP.
+"""
+(out/"README.txt").write_text(readme, encoding="utf-8")
+
+zip_path = Path("/mnt/data/undangan_jawa_demo.zip")
+with zipfile.ZipFile(zip_path,"w",zipfile.ZIP_DEFLATED) as z:
+    for p in out.rglob("*"):
+        z.write(p, p.relative_to(out.parent))
+print(zip_path)
